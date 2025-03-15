@@ -133,8 +133,8 @@ class VirtualAssistant:
             self.logger.error(f"Number identification error: {e}")
 
     def get_weather(self):
-        api_key = input("Please enter your OpenWeather API key: ")
-        city = input("Please enter the city name: ")
+        api_key ="b02f2b1fcf150005eee65f2d0301cc97"
+        city = "bengaluru"
 
         try:
             url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
