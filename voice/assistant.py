@@ -40,20 +40,18 @@ class VirtualAssistant:
         self.engine.runAndWait()
 
     def get_input(self):
+        recognizer = sr.Recognizer()
         with sr.Microphone() as source:
             print("Listening...")
-            self.recognizer.adjust_for_ambient_noise(source)
-            audio = self.recognizer.listen(source)
+            recognizer.adjust_for_ambient_noise(source)
+            audio = recognizer.listen(source)
         try:
-            try:
-                command = self.recognizer.recognize_google(audio)
-            except Exception as e:
-                self.logger.error(f"Error recognizing command: {e}")
-                return "I couldn't understand. Please repeat."
+            command = recognizer.recognize_google(audio)
             print(f"User said: {command}")
             return command.lower()
         except sr.UnknownValueError:
-            return "I couldn't understand. Please repeat."
+            self.speak("I couldn't understand. Please repeat.")
+            return self.get_input()
 
     def calculate(self, query):
         try:
@@ -133,8 +131,8 @@ class VirtualAssistant:
             self.logger.error(f"Number identification error: {e}")
 
     def get_weather(self):
-        api_key ="b02f2b1fcf150005eee65f2d0301cc97"
-        city = "bengaluru"
+        api_key = input("Please enter your OpenWeather API key: ")
+        city = input("Please enter the city name: ")
 
         try:
             url = f"http://api.openweathermap.org/data/2.5/weather?q={city}&appid={api_key}&units=metric"
@@ -313,33 +311,20 @@ class VirtualAssistant:
         webbrowser.open(url)
         self.speak(f"Showing location for {location} on Google Maps.")
 
-    def get_input(self):
-        recognizer = sr.Recognizer()
-        with sr.Microphone() as source:
-            print("Listening...")
-            recognizer.adjust_for_ambient_noise(source)
-            audio = recognizer.listen(source)
-        try:
-            command = recognizer.recognize_google(audio)
-            print(f"User said: {command}")
-            return command.lower()
-        except sr.UnknownValueError:
-            self.speak("I couldn't understand. Please repeat.")
-            return get_input()
-
     def send_email(self):
         try:
-            sender_email = "your_email@gmail.com"
-            sender_password = "your_app_password"
+            sender_email = "your_email@gmail.com"  # Update with your email
+            sender_password = "your_app_password"  # Update with your app password
+
 
             self.speak("Please say the recipient's email address.")
-            recipient_email = get_input().replace(" ", "").replace("at", "@").replace("dot", ".")
+            recipient_email = self.get_input().replace(" ", "").replace("at", "@").replace("dot", ".")
         
             self.speak("What should be the subject of the email?")
-            subject = get_input()
+            subject = self.get_input()
         
             self.speak("Please say your message.")
-            body = get_input()
+            body = self.get_input()
 
             message = EmailMessage()
             message['From'] = sender_email
